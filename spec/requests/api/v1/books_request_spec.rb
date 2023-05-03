@@ -60,4 +60,25 @@ RSpec.describe 'Books API', type: :request do
     expect(book).to have_key(:number_sold)
     expect(book[:number_sold]).to be_a(Integer)
   end
+
+  it 'can create a new book' do
+    book_params = ({
+      title: 'Shantaram',
+      author: 'Gregory David Roberts',
+      genre: 'Biography/Novel',
+      summary: 'Dude is one crazy dude',
+      numer_sold: 1_305_476
+    })
+    headers = {'CONTENT_TYPE' => 'application/json'}
+
+    post '/api/v1/books', headers: headers, params: JSON.generate(book: book_params)
+    created_book = Book.last
+
+    expect(response).to be_successful
+    expect(created_book.title).to eq(book_params[:title])
+    expect(created_book.author).to eq(book_params[:author])
+    expect(created_book.summary).to eq(book_params[:summary])
+    expect(created_book.genre).to eq(book_params[:genre])
+    expect(created_book.number_sold).to eq(book_params[:number_sold])
+  end
 end
